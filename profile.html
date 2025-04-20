@@ -199,41 +199,78 @@
     </div>
 
     <!-- JavaScript -->
+    
     <script>
-        function openAuthPopup() {
-            document.getElementById("authPopup").style.display = "block";
-            document.getElementById("overlay").style.display = "block";
+        async function login() {
+          const username = document.getElementById("loginUsername").value;
+          const password = document.getElementById("loginPassword").value;
+          const errorEl = document.getElementById("loginErrorMessage");
+      
+          const response = await fetch("LoginServlet", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+          });
+      
+          const result = await response.json();
+          if (result.success) {
+            window.location.reload();
+          } else {
+            errorEl.innerText = result.message;
+          }
         }
-
-        function closeAuthPopup() {
-            document.getElementById("authPopup").style.display = "none";
-            document.getElementById("overlay").style.display = "none";
+      
+        async function signup() {
+          const username = document.getElementById("signupUsername").value;
+          const email = document.getElementById("signupEmail").value;
+          const password = document.getElementById("signupPassword").value;
+          const errorEl = document.getElementById("signupErrorMessage");
+      
+          const response = await fetch("SignupServlet", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, email, password })
+          });
+      
+          const result = await response.json();
+          if (result.success) {
+            alert("Account created! Please login.");
+            showTab('login');
+          } else {
+            errorEl.innerText = result.message;
+          }
         }
-
+      
         function showTab(tab) {
-            if (tab === 'login') {
-                document.getElementById("loginForm").style.display = "block";
-                document.getElementById("signupForm").style.display = "none";
-                document.querySelector(".tab-btn.active").classList.remove("active");
-                document.querySelector(".auth-tabs .tab-btn:nth-child(1)").classList.add("active");
-            } else {
-                document.getElementById("loginForm").style.display = "none";
-                document.getElementById("signupForm").style.display = "block";
-                document.querySelector(".tab-btn.active").classList.remove("active");
-                document.querySelector(".auth-tabs .tab-btn:nth-child(2)").classList.add("active");
-            }
+          const loginForm = document.getElementById('loginForm');
+          const signupForm = document.getElementById('signupForm');
+          const tabButtons = document.querySelectorAll('.tab-btn');
+      
+          if (tab === 'login') {
+            loginForm.style.display = 'block';
+            signupForm.style.display = 'none';
+            tabButtons[0].classList.add('active');
+            tabButtons[1].classList.remove('active');
+          } else {
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
+            tabButtons[1].classList.add('active');
+            tabButtons[0].classList.remove('active');
+          }
         }
+      
+        function openAuthPopup() {
+          document.getElementById("overlay").style.display = "block";
+          document.getElementById("authPopup").style.display = "block";
+        }
+      
+        function closeAuthPopup() {
+          document.getElementById("overlay").style.display = "none";
+          document.getElementById("authPopup").style.display = "none";
+        }
+      </script>
+        
 
-        function login() {
-            alert("Login button clicked! (Implement backend authentication)");
-            closeAuthPopup();
-        }
-
-        function signup() {
-            alert("Sign Up button clicked! (Implement backend authentication)");
-            closeAuthPopup();
-        }
-    </script>
 
 </body>
 </html>
